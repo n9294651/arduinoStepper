@@ -11,8 +11,8 @@ char user_input;
 int x;
 int y;
 int state;
-int homePos = -1;
-int endPos = 100;
+int currentPos = -1;
+int endPos = 200;
 
 void setup() {
   pinMode(stp, OUTPUT);
@@ -66,7 +66,7 @@ void loop() {
   }
   else if(user_input =='6')
   {
-    GoToEnd()
+    GoToEnd();
   }
   else
   {
@@ -91,12 +91,13 @@ void StepForwardDefault()
 {
   Serial.println("Moving forward at default step mode.");
   digitalWrite(dir, LOW); //Pull direction pin low to move "forward"
-  for(x= 1; x<1000; x++)  //Loop the forward stepping enough times for motion to be visible
+  for(x= 1; x<140; x++)  //Loop the forward stepping enough times for motion to be visible
   {
     digitalWrite(stp,HIGH); //Trigger one step forward
     delay(1);
     digitalWrite(stp,LOW); //Pull step pin low so it can be triggered again
     delay(1);
+    currentPos++;
   }
   Serial.println("Enter new option");
   Serial.println();
@@ -185,7 +186,7 @@ void HomeStepper()
     digitalWrite(stp,LOW);
     delay(4);
   }
-  homePos = 0;
+  currentPos = 0;
   Serial.println("Stepper homed.");
   Serial.println("Enter new option");
   Serial.println();
@@ -193,10 +194,25 @@ void HomeStepper()
 
 void GoToEnd()
 {
+  Serial.println("current pos: ");
+  Serial.println(currentPos);
+  Serial.println("End pos: ");
+  Serial.println(endPos);
   Serial.println("Going to end.");
   digitalWrite(dir, LOW); //Pull direction pin low to move "forward"
-  digitalWrite(MS1, HIGH); //Pull MS1, and MS2 high to set logic to 1/8th microstep resolution
-  digitalWrite(MS2, HIGH);
-  for(int i = 
+  digitalWrite(MS1, LOW); 
+  digitalWrite(MS2, LOW);
+  while(currentPos < endPos)
+  {
+    digitalWrite(stp,HIGH); //Trigger one step forward
+    delay(1);
+    digitalWrite(stp,LOW); //Pull step pin low so it can be triggered again
+    delay(1);
+    currentPos++;
+    Serial.println(currentPos);
+  }
+  Serial.println("Stepper at end.");
+  Serial.println("Enter new option");
+  Serial.println();
 }
 
