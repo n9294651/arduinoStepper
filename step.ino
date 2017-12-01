@@ -35,40 +35,44 @@ void setup() {
   Serial.println("3. Turn at 1/8th microstep mode.");
   Serial.println("4. Step forward and reverse directions.");
   Serial.println("5. Home stepper motor.");
+  Serial.println("6. Go to end.");
   Serial.println();
-  
 }
 
 //Main loop
 void loop() {
   while(Serial.available()){
-      user_input = Serial.read(); //Read user input and trigger appropriate function
-      digitalWrite(EN, LOW); //Pull enable pin low to allow motor control
-      if (user_input =='1')
-      {
-         StepForwardDefault();
-      }
-      else if(user_input =='2')
-      {
-        ReverseStepDefault();
-      }
-      else if(user_input =='3')
-      {
-        SmallStepMode();
-      }
-      else if(user_input =='4')
-      {
-        ForwardBackwardStep();
-      }
-      else if(user_input =='5')
-      {
-        HomeStepper();
-      }
-      else
-      {
-        Serial.println("Invalid option entered.");
-      }
-      resetEDPins();
+  user_input = Serial.read(); //Read user input and trigger appropriate function
+  digitalWrite(EN, LOW); //Pull enable pin low to allow motor control
+  if (user_input =='1')
+  {
+    StepForwardDefault();
+  }
+  else if(user_input =='2')
+  {
+    ReverseStepDefault();
+  }
+  else if(user_input =='3')
+  {
+    SmallStepMode();
+  }
+  else if(user_input =='4')
+  {
+    ForwardBackwardStep();
+  }
+  else if(user_input =='5')
+  {
+    HomeStepper();
+  }
+  else if(user_input =='6')
+  {
+    GoToEnd()
+  }
+  else
+  {
+    Serial.println("Invalid option entered.");
+  }
+  resetEDPins();
   }
 }
 
@@ -148,7 +152,7 @@ void ForwardBackwardStep()
     {
       digitalWrite(dir,HIGH);
     }
-    
+  
     for(y=1; y<endPos; y++)
     {
       digitalWrite(stp,HIGH); //Trigger one step
@@ -164,9 +168,9 @@ void ForwardBackwardStep()
 void HomeStepper()
 {
   Serial.println("Homing stepper motor.");
-    digitalWrite(dir, LOW); //Pull direction pin low to move "forward"
-    digitalWrite(MS1, HIGH); //Pull MS1, and MS2 high to set logic to 1/8th microstep resolution
-    digitalWrite(MS2, HIGH);
+  digitalWrite(dir, LOW); //Pull direction pin low to move "forward"
+  digitalWrite(MS1, HIGH); //Pull MS1, and MS2 high to set logic to 1/8th microstep resolution
+  digitalWrite(MS2, HIGH);
   while(digitalRead(lim) != LOW){
     digitalWrite(stp,HIGH); //Trigger one step forward
     delay(1);
@@ -185,7 +189,14 @@ void HomeStepper()
   Serial.println("Stepper homed.");
   Serial.println("Enter new option");
   Serial.println();
- }
+}
 
-
+void GoToEnd()
+{
+  Serial.println("Going to end.");
+  digitalWrite(dir, LOW); //Pull direction pin low to move "forward"
+  digitalWrite(MS1, HIGH); //Pull MS1, and MS2 high to set logic to 1/8th microstep resolution
+  digitalWrite(MS2, HIGH);
+  for(int i = 
+}
 
